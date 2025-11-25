@@ -66,6 +66,12 @@
             100% { transform: translateY(30px); }
         }
 
+        /* Special Prize Cards */
+        .prize-card {
+            background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%);
+            border: 4px dashed #4ade80;
+        }
+
         .cat-avatar {
             background-color: #f3f4f6;
             border-radius: 50%;
@@ -79,6 +85,18 @@
             opacity: 0.1;
             pointer-events: none;
             z-index: 0;
+        }
+        
+        .math-pill {
+            background-color: #f0f9ff;
+            color: #0369a1;
+            font-family: monospace;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid #bae6fd;
+            display: inline-block;
+            margin-top: 4px;
         }
     </style>
 </head>
@@ -96,13 +114,21 @@
     <main class="container mx-auto px-4 pb-20 relative z-10">
         
         <!-- Podium Section (Top 3) -->
-        <div class="mb-24 mt-8">
+        <div class="mb-20 mt-8">
              <h2 class="text-4xl text-center text-pink-600 mb-12 silly-font drop-shadow-sm">👑 The Royal Family 👑</h2>
             
              <!-- Flex container for podium alignment -->
              <div class="flex flex-col md:flex-row items-end justify-center gap-4 md:gap-0 h-auto md:h-96" id="podium-container">
                  <!-- Podium Javascript will inject here -->
              </div>
+        </div>
+
+        <!-- Special Prizes Section -->
+        <div class="mb-20">
+            <h2 class="text-3xl text-center text-purple-600 mb-8 silly-font">🏅 Special Hall of Fame 🏅</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="prizes-container">
+                <!-- JS will inject prizes here -->
+            </div>
         </div>
 
         <!-- Stats Grid -->
@@ -113,9 +139,9 @@
                 <p class="text-3xl font-black" id="total-votes">0</p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-purple-400 text-center transform rotate-1 hover:rotate-0 transition">
-                <div class="text-4xl mb-2">📸</div>
+                <div class="text-4xl mb-2">🧮</div>
                 <h3 class="text-xl font-bold text-purple-600">Fairness Check</h3>
-                <p class="text-lg font-bold">100% Certified</p>
+                <p class="text-lg font-bold">Verified Math</p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-green-400 text-center transform -rotate-1 hover:rotate-0 transition">
                 <div class="text-4xl mb-2">🐈</div>
@@ -144,7 +170,7 @@
 
     <script>
         // --- DATA ---
-        // I've kept the metadata for the descriptions, but added dynamic image generation
+        // Includes extended stats (Total Score, Count, Fives) calculated from your CSV
         const catMetadata = {
             "Fadi": { desc: "The King of the Jungle (House)" },
             "The night": { desc: "Dark mode activated" },
@@ -160,23 +186,21 @@
         };
 
         const results = [
-            { rank: 1, name: "Fadi", score: 3.93, votes: 27 },
-            { rank: 2, name: "The night", score: 3.71, votes: 108 },
-            { rank: 3, name: "Auwias", score: 3.68, votes: 135 },
-            { rank: 4, name: "Hop", score: 3.63, votes: 54 },
-            { rank: 5, name: "mocaccino", score: 3.50, votes: 54 },
-            { rank: 6, name: "zaid", score: 3.44, votes: 27 },
-            { rank: 7, name: "Polar", score: 3.29, votes: 108 },
-            { rank: 8, name: "Qabls", score: 3.18, votes: 162 },
-            { rank: 9, name: "L", score: 3.07, votes: 27 },
-            { rank: 10, name: "bashar", score: 3.05, votes: 81 },
-            { rank: 11, name: "Zi", score: 3.01, votes: 135 }
+            { rank: 1, name: "Fadi", score: 3.93, votes: 27, totalScore: 106, fives: 17 },
+            { rank: 2, name: "The night", score: 3.71, votes: 108, totalScore: 401, fives: 49 },
+            { rank: 3, name: "Auwias", score: 3.68, votes: 135, totalScore: 497, fives: 63 },
+            { rank: 4, name: "Hop", score: 3.63, votes: 54, totalScore: 196, fives: 25 },
+            { rank: 5, name: "mocaccino", score: 3.50, votes: 54, totalScore: 189, fives: 19 },
+            { rank: 6, name: "zaid", score: 3.44, votes: 27, totalScore: 93, fives: 10 },
+            { rank: 7, name: "Polar", score: 3.29, votes: 108, totalScore: 355, fives: 43 },
+            { rank: 8, name: "Qabls", score: 3.18, votes: 162, totalScore: 515, fives: 47 },
+            { rank: 9, name: "L", score: 3.07, votes: 27, totalScore: 83, fives: 9 },
+            { rank: 10, name: "bashar", score: 3.05, votes: 81, totalScore: 247, fives: 25 },
+            { rank: 11, name: "Zi", score: 3.01, votes: 135, totalScore: 407, fives: 37 }
         ];
 
         // --- UTILS ---
         function getCatImage(name) {
-            // RoboHash generates unique cat images based on the text string
-            // set=set4 is cats
             return `https://robohash.org/${name}?set=set4&bgset=bg1&size=200x200`;
         }
 
@@ -188,6 +212,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderPodium();
+            renderPrizes();
             renderStats();
             renderLeaderboard();
             generateBackgroundPaws();
@@ -202,23 +227,10 @@
             const second = results[1];
             const third = results[2];
 
-            // ORDER: 2nd Place (Left), 1st Place (Center), 3rd Place (Right)
-            // But in mobile (flex-col), we might want 1st on top.
-            // Using `order` classes to manipulate visual order if needed, but manual DOM order is easier for this Podium effect.
-
             const secondPlaceHTML = createPodiumCard(second, 2, "bg-gray-100 border-gray-300", "text-gray-500", "scale-90 md:translate-y-8 podium-2", "🥈");
             const firstPlaceHTML = createPodiumCard(winner, 1, "bg-yellow-50 border-yellow-400 ring-4 ring-yellow-200", "text-yellow-600", "scale-110 -translate-y-4 md:-translate-y-12 z-20 podium-1", "👑");
             const thirdPlaceHTML = createPodiumCard(third, 3, "bg-orange-50 border-orange-300", "text-orange-600", "scale-90 md:translate-y-12 podium-3", "🥉");
-
-            // On Mobile (flex-col), we want Winner First. On Desktop (flex-row), we want 2 - 1 - 3
-            // Tailwind `order-` classes can handle this.
-            // Mobile: 1 (order-1), 2 (order-2), 3 (order-3)
-            // Desktop: 2 (order-1), 1 (order-2), 3 (order-3) -- wait, podium standard is 2-1-3 L-to-R.
             
-            // Let's just structure HTML for Desktop (2-1-3) and use flex-col-reverse/manipulation for mobile if needed,
-            // but for simplicity, let's just stack them on mobile 1-2-3 manually by checking screen width or just letting them stack naturally.
-            
-            // To force the specific order 2 - 1 - 3 on desktop:
             container.innerHTML = `
                 <div class="order-2 md:order-1 w-full md:w-1/3 flex justify-center">${secondPlaceHTML}</div>
                 <div class="order-1 md:order-2 w-full md:w-1/3 flex justify-center mb-8 md:mb-0">${firstPlaceHTML}</div>
@@ -228,7 +240,7 @@
 
         function createPodiumCard(cat, rank, colorClasses, textClasses, animClasses, badgeIcon) {
             return `
-                <div class="relative w-full max-w-xs ${animClasses} cursor-pointer" onclick="launchConfetti()">
+                <div class="relative w-full max-w-xs ${animClasses} cursor-pointer group" onclick="launchConfetti()">
                     <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl z-30 drop-shadow-md">${badgeIcon}</div>
                     <div class="${colorClasses} rounded-3xl p-6 shadow-xl border-b-8 text-center flex flex-col items-center">
                         <img src="${getCatImage(cat.name)}" alt="${cat.name}" class="cat-avatar w-32 h-32 mb-4 object-cover bg-white">
@@ -236,11 +248,41 @@
                         <p class="text-xs text-gray-500 italic mb-3 px-2 h-8 overflow-hidden">"${getCatDesc(cat.name)}"</p>
                         <div class="bg-white/80 rounded-lg px-4 py-2 w-full">
                             <div class="text-3xl font-black ${textClasses}">${cat.score}</div>
-                            <div class="text-xs text-gray-400 uppercase tracking-wider">Avg Score</div>
+                            <div class="text-xs text-gray-400 uppercase tracking-wider mb-2">Avg Score</div>
+                            <div class="math-pill border-t border-gray-200 pt-1 mt-1 block">
+                                ${cat.totalScore} pts / ${cat.votes} votes
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        function renderPrizes() {
+            const container = document.getElementById('prizes-container');
+            
+            // Logic to find winners for special categories
+            const mostVotesCat = results.reduce((prev, current) => (prev.votes > current.votes) ? prev : current);
+            const mostFivesCat = results.reduce((prev, current) => (prev.fives > current.fives) ? prev : current);
+            // Winner is already results[0]
+
+            const prizes = [
+                { title: "The Crowd Pleaser", icon: "📢", cat: mostVotesCat, reason: `Most Votes Received (${mostVotesCat.votes})`, color: "border-purple-400 bg-purple-50" },
+                { title: "5-Star Magnet", icon: "⭐", cat: mostFivesCat, reason: `Most 5/5 Ratings (${mostFivesCat.fives})`, color: "border-yellow-400 bg-yellow-50" },
+                { title: "The Perfectionist", icon: "🎯", cat: results[0], reason: "Highest Average Score", color: "border-green-400 bg-green-50" }
+            ];
+
+            prizes.forEach(prize => {
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl p-6 shadow-md border-b-4 ${prize.color} flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
+                        <div class="text-4xl mb-2">${prize.icon}</div>
+                        <h3 class="font-bold text-xl mb-2 text-gray-800">${prize.title}</h3>
+                        <img src="${getCatImage(prize.cat.name)}" class="w-16 h-16 rounded-full border-2 border-white shadow mb-2">
+                        <div class="font-bold text-lg">${prize.cat.name}</div>
+                        <div class="text-sm text-gray-600 bg-white/50 px-2 py-1 rounded-full mt-1">${prize.reason}</div>
+                    </div>
+                `;
+            });
         }
 
         function renderStats() {
@@ -251,19 +293,11 @@
 
         function renderLeaderboard() {
             const container = document.getElementById('leaderboard-container');
-            const maxVotes = Math.max(...results.map(c => c.votes));
-
-            // Slice from index 3 (Rank 4) onwards
+            
             const restOfCats = results.slice(3);
 
             restOfCats.forEach((cat) => {
                 const rank = cat.rank;
-                
-                let badgeHTML = '';
-                if (cat.votes === maxVotes && cat.votes > 0) {
-                     badgeHTML += '<span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full font-bold ml-2">📢 Peoples Choice</span>';
-                }
-
                 const card = document.createElement('div');
                 card.className = `cat-card bg-white p-4 rounded-xl shadow border-l-8 flex items-center justify-between hover:bg-gray-50 ${getBorderColor(rank)}`;
                 
@@ -274,14 +308,15 @@
                         <div>
                             <h3 class="text-lg font-bold text-gray-800 flex items-center flex-wrap gap-2">
                                 ${cat.name}
-                                ${badgeHTML}
                             </h3>
                             <p class="text-sm text-gray-500 italic">"${getCatDesc(cat.name)}"</p>
                         </div>
                     </div>
                     <div class="text-right pl-4">
                         <div class="text-xl font-bold text-gray-700">${cat.score}</div>
-                        <div class="text-xs text-gray-400">Avg</div>
+                        <div class="math-pill mt-1">
+                            ${cat.totalScore} ÷ ${cat.votes}
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
