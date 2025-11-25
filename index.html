@@ -98,6 +98,14 @@
             display: inline-block;
             margin-top: 4px;
         }
+        
+        .math-explanation {
+            background-color: #ffffff;
+            border: 2px solid #a7f3d0;
+            padding: 24px;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="text-gray-800 overflow-x-hidden">
@@ -157,6 +165,27 @@
                 <!-- Javascript will populate this -->
             </div>
         </div>
+        
+        <!-- Math Explanation Section -->
+        <div class="max-w-4xl mx-auto mt-20">
+            <h2 class="text-3xl text-center text-green-700 mb-6 silly-font">🔬 How The Advanced Meow-thematics Work 🤓</h2>
+            <div class="math-explanation">
+                <p class="mb-4 text-gray-700">The final ranking is based on the **Average Score** because we want the best-rated cat to win, not just the most popular cat. **Total Number of Votes** tells you who's the most famous, but **Average Score** tells you who's the most loved!</p>
+                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mb-4">
+                    <p class="text-lg font-bold text-green-800">The Formula (The Average Score):</p>
+                    <p class="text-xl font-mono text-green-900 mt-2">
+                        <span class="font-extrabold text-2xl">Average Score</span> = $$\frac{\text{Total Points Received (1s + 2s + 3s + 4s + 5s)}}{\text{Total Number of Votes}}$$
+                    </p>
+                </div>
+                <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <li>Scores are based on a 1 (lowest) to 5 (highest) rating system.</li>
+                    <li>The **Total Points Received** is the sum of every individual rating a cat received. Think of this as the cat's total lifetime score.</li>
+                    <li>The **Total Number of Votes** (or just "Votes") is simply how many people rated that cat. Think of it as **popularity**. (This number is the denominator in the formula).</li>
+                    <li>We calculate the average, round it to two decimal places, and rank the cats from highest average to lowest.</li>
+                    <li>The small calculation you see on each card (e.g., `106 ÷ 27`) confirms this calculation.</li>
+                </ul>
+            </div>
+        </div>
 
     </main>
 
@@ -201,6 +230,7 @@
 
         // --- UTILS ---
         function getCatImage(name) {
+            // RoboHash generates unique cat images based on the text string
             return `https://robohash.org/${name}?set=set4&bgset=bg1&size=200x200`;
         }
 
@@ -216,7 +246,13 @@
             renderStats();
             renderLeaderboard();
             generateBackgroundPaws();
-            setTimeout(launchConfetti, 800);
+            // Wait for MathJax (LaTeX) to process the formula before launching confetti
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+                launchConfetti();
+            }, 800);
         });
 
         function renderPodium() {
@@ -356,6 +392,10 @@
                 container.appendChild(paw);
             }
         }
+    </script>
+    <!-- MathJax for rendering LaTeX formula -->
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
 </body>
 </html>
