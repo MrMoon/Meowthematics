@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Great Cat-tastrophe 2025 Results</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka One for maximum silliness -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5f5;
+            background-image: radial-gradient(#ffe4e6 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        
+        h1, h2, h3, .silly-font {
+            font-family: 'Fredoka One', cursive;
+        }
+
+        /* Card Hover Effects */
+        .cat-card {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .cat-card:hover {
+            transform: scale(1.03) translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        /* Podium Animations */
+        .podium-card {
+            transition: transform 0.4s;
+        }
+        .podium-1 {
+            animation: float 4s ease-in-out infinite;
+            z-index: 20;
+        }
+        .podium-2 {
+            animation: float-delayed 5s ease-in-out infinite;
+            z-index: 10;
+        }
+        .podium-3 {
+            animation: float-delayed-2 6s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes float-delayed {
+            0% { transform: translateY(20px); } /* Starts lower */
+            50% { transform: translateY(5px); }
+            100% { transform: translateY(20px); }
+        }
+        @keyframes float-delayed-2 {
+            0% { transform: translateY(30px); } /* Starts even lower */
+            50% { transform: translateY(15px); }
+            100% { transform: translateY(30px); }
+        }
+
+        .cat-avatar {
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .paw-print {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="text-gray-800 overflow-x-hidden">
+
+    <!-- Navbar / Header -->
+    <header class="bg-pink-500 text-white p-6 shadow-lg transform -skew-y-2 mb-10 border-b-8 border-pink-700">
+        <div class="container mx-auto text-center transform skew-y-2">
+            <h1 class="text-4xl md:text-6xl text-yellow-300 drop-shadow-md mb-2">🏆 The Grand Meow-off 🏆</h1>
+            <p class="text-xl font-bold">Official Results of the 2025 Cat Contest</p>
+            <p class="text-sm opacity-90 mt-2">(Powered by Advanced Meow-thematics)</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 pb-20 relative z-10">
+        
+        <!-- Podium Section (Top 3) -->
+        <div class="mb-24 mt-8">
+             <h2 class="text-4xl text-center text-pink-600 mb-12 silly-font drop-shadow-sm">👑 The Royal Family 👑</h2>
+            
+             <!-- Flex container for podium alignment -->
+             <div class="flex flex-col md:flex-row items-end justify-center gap-4 md:gap-0 h-auto md:h-96" id="podium-container">
+                 <!-- Podium Javascript will inject here -->
+             </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-blue-400 text-center transform -rotate-1 hover:rotate-0 transition">
+                <div class="text-4xl mb-2">🗳️</div>
+                <h3 class="text-xl font-bold text-blue-600">Total Votes Cast</h3>
+                <p class="text-3xl font-black" id="total-votes">0</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-purple-400 text-center transform rotate-1 hover:rotate-0 transition">
+                <div class="text-4xl mb-2">📸</div>
+                <h3 class="text-xl font-bold text-purple-600">Fairness Check</h3>
+                <p class="text-lg font-bold">100% Certified</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-green-400 text-center transform -rotate-1 hover:rotate-0 transition">
+                <div class="text-4xl mb-2">🐈</div>
+                <h3 class="text-xl font-bold text-green-600">Contestants</h3>
+                <p class="text-3xl font-black" id="total-cats">0</p>
+            </div>
+        </div>
+
+        <!-- Leaderboard (Rank 4+) -->
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl text-center text-gray-700 mb-8 silly-font">✨ Honorable Meow-ntions ✨</h2>
+            <div class="space-y-4" id="leaderboard-container">
+                <!-- Javascript will populate this -->
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-10 text-center">
+        <p class="text-lg mb-2">🐾 Made for the love of cats 🐾</p>
+        <p class="text-xs text-gray-500">Avatars generated by Robohash (because real cats refused to sign model releases).</p>
+    </footer>
+
+    <!-- Background Paws Generation -->
+    <div id="paws-container"></div>
+
+    <script>
+        // --- DATA ---
+        // I've kept the metadata for the descriptions, but added dynamic image generation
+        const catMetadata = {
+            "Fadi": { desc: "The King of the Jungle (House)" },
+            "The night": { desc: "Dark mode activated" },
+            "Auwias": { desc: "Bronze but bold" },
+            "Hop": { desc: "Hopped into our hearts" },
+            "mocaccino": { desc: "Sweet like coffee" },
+            "zaid": { desc: "Solid mid-table performance" },
+            "Polar": { desc: "Cool as ice" },
+            "Qabls": { desc: "Most votes received! (Paparazzi Fav)" },
+            "L": { desc: "Mysterious single letter name" },
+            "bashar": { desc: "Trying his best" },
+            "Zi": { desc: "Maybe was sleeping in the pics?" }
+        };
+
+        const results = [
+            { rank: 1, name: "Fadi", score: 3.93, votes: 27 },
+            { rank: 2, name: "The night", score: 3.71, votes: 108 },
+            { rank: 3, name: "Auwias", score: 3.68, votes: 135 },
+            { rank: 4, name: "Hop", score: 3.63, votes: 54 },
+            { rank: 5, name: "mocaccino", score: 3.50, votes: 54 },
+            { rank: 6, name: "zaid", score: 3.44, votes: 27 },
+            { rank: 7, name: "Polar", score: 3.29, votes: 108 },
+            { rank: 8, name: "Qabls", score: 3.18, votes: 162 },
+            { rank: 9, name: "L", score: 3.07, votes: 27 },
+            { rank: 10, name: "bashar", score: 3.05, votes: 81 },
+            { rank: 11, name: "Zi", score: 3.01, votes: 135 }
+        ];
+
+        // --- UTILS ---
+        function getCatImage(name) {
+            // RoboHash generates unique cat images based on the text string
+            // set=set4 is cats
+            return `https://robohash.org/${name}?set=set4&bgset=bg1&size=200x200`;
+        }
+
+        function getCatDesc(name) {
+            return catMetadata[name]?.desc || "A mysterious challenger!";
+        }
+
+        // --- RENDER LOGIC ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPodium();
+            renderStats();
+            renderLeaderboard();
+            generateBackgroundPaws();
+            setTimeout(launchConfetti, 800);
+        });
+
+        function renderPodium() {
+            const container = document.getElementById('podium-container');
+            if (results.length < 3) return; 
+
+            const winner = results[0];
+            const second = results[1];
+            const third = results[2];
+
+            // ORDER: 2nd Place (Left), 1st Place (Center), 3rd Place (Right)
+            // But in mobile (flex-col), we might want 1st on top.
+            // Using `order` classes to manipulate visual order if needed, but manual DOM order is easier for this Podium effect.
+
+            const secondPlaceHTML = createPodiumCard(second, 2, "bg-gray-100 border-gray-300", "text-gray-500", "scale-90 md:translate-y-8 podium-2", "🥈");
+            const firstPlaceHTML = createPodiumCard(winner, 1, "bg-yellow-50 border-yellow-400 ring-4 ring-yellow-200", "text-yellow-600", "scale-110 -translate-y-4 md:-translate-y-12 z-20 podium-1", "👑");
+            const thirdPlaceHTML = createPodiumCard(third, 3, "bg-orange-50 border-orange-300", "text-orange-600", "scale-90 md:translate-y-12 podium-3", "🥉");
+
+            // On Mobile (flex-col), we want Winner First. On Desktop (flex-row), we want 2 - 1 - 3
+            // Tailwind `order-` classes can handle this.
+            // Mobile: 1 (order-1), 2 (order-2), 3 (order-3)
+            // Desktop: 2 (order-1), 1 (order-2), 3 (order-3) -- wait, podium standard is 2-1-3 L-to-R.
+            
+            // Let's just structure HTML for Desktop (2-1-3) and use flex-col-reverse/manipulation for mobile if needed,
+            // but for simplicity, let's just stack them on mobile 1-2-3 manually by checking screen width or just letting them stack naturally.
+            
+            // To force the specific order 2 - 1 - 3 on desktop:
+            container.innerHTML = `
+                <div class="order-2 md:order-1 w-full md:w-1/3 flex justify-center">${secondPlaceHTML}</div>
+                <div class="order-1 md:order-2 w-full md:w-1/3 flex justify-center mb-8 md:mb-0">${firstPlaceHTML}</div>
+                <div class="order-3 md:order-3 w-full md:w-1/3 flex justify-center">${thirdPlaceHTML}</div>
+            `;
+        }
+
+        function createPodiumCard(cat, rank, colorClasses, textClasses, animClasses, badgeIcon) {
+            return `
+                <div class="relative w-full max-w-xs ${animClasses} cursor-pointer" onclick="launchConfetti()">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl z-30 drop-shadow-md">${badgeIcon}</div>
+                    <div class="${colorClasses} rounded-3xl p-6 shadow-xl border-b-8 text-center flex flex-col items-center">
+                        <img src="${getCatImage(cat.name)}" alt="${cat.name}" class="cat-avatar w-32 h-32 mb-4 object-cover bg-white">
+                        <h2 class="text-2xl font-bold mb-1 truncate w-full">${cat.name}</h2>
+                        <p class="text-xs text-gray-500 italic mb-3 px-2 h-8 overflow-hidden">"${getCatDesc(cat.name)}"</p>
+                        <div class="bg-white/80 rounded-lg px-4 py-2 w-full">
+                            <div class="text-3xl font-black ${textClasses}">${cat.score}</div>
+                            <div class="text-xs text-gray-400 uppercase tracking-wider">Avg Score</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStats() {
+            const totalVotes = results.reduce((acc, curr) => acc + curr.votes, 0);
+            document.getElementById('total-votes').textContent = totalVotes;
+            document.getElementById('total-cats').textContent = results.length;
+        }
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-container');
+            const maxVotes = Math.max(...results.map(c => c.votes));
+
+            // Slice from index 3 (Rank 4) onwards
+            const restOfCats = results.slice(3);
+
+            restOfCats.forEach((cat) => {
+                const rank = cat.rank;
+                
+                let badgeHTML = '';
+                if (cat.votes === maxVotes && cat.votes > 0) {
+                     badgeHTML += '<span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full font-bold ml-2">📢 Peoples Choice</span>';
+                }
+
+                const card = document.createElement('div');
+                card.className = `cat-card bg-white p-4 rounded-xl shadow border-l-8 flex items-center justify-between hover:bg-gray-50 ${getBorderColor(rank)}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-center gap-4 flex-1">
+                        <div class="text-2xl font-bold w-8 text-center text-gray-300">#${rank}</div>
+                        <img src="${getCatImage(cat.name)}" alt="${cat.name}" class="w-16 h-16 rounded-full border-2 border-white shadow-sm bg-gray-100">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 flex items-center flex-wrap gap-2">
+                                ${cat.name}
+                                ${badgeHTML}
+                            </h3>
+                            <p class="text-sm text-gray-500 italic">"${getCatDesc(cat.name)}"</p>
+                        </div>
+                    </div>
+                    <div class="text-right pl-4">
+                        <div class="text-xl font-bold text-gray-700">${cat.score}</div>
+                        <div class="text-xs text-gray-400">Avg</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function getBorderColor(rank) {
+            const colors = ['border-pink-300', 'border-blue-300', 'border-green-300', 'border-purple-300', 'border-yellow-300'];
+            return colors[rank % colors.length];
+        }
+
+        function launchConfetti() {
+            var duration = 2 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var random = function(min, max) { return Math.random() * (max - min) + min; }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function generateBackgroundPaws() {
+            const container = document.getElementById('paws-container');
+            for(let i=0; i<20; i++) {
+                const paw = document.createElement('div');
+                paw.textContent = '🐾';
+                paw.className = 'paw-print';
+                paw.style.left = Math.random() * 100 + 'vw';
+                paw.style.top = Math.random() * 100 + 'vh';
+                paw.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(paw);
+            }
+        }
+    </script>
+</body>
+</html>
