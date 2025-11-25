@@ -26,9 +26,10 @@
         /* Card Hover Effects */
         .cat-card {
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
         .cat-card:hover {
-            transform: scale(1.03) translateY(-5px);
+            transform: scale(1.02) translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
             z-index: 10;
         }
@@ -36,6 +37,7 @@
         /* Podium Animations */
         .podium-card {
             transition: transform 0.4s;
+            cursor: pointer;
         }
         .podium-1 {
             animation: float 4s ease-in-out infinite;
@@ -56,17 +58,16 @@
             100% { transform: translateY(0px); }
         }
         @keyframes float-delayed {
-            0% { transform: translateY(20px); } /* Starts lower */
+            0% { transform: translateY(20px); } 
             50% { transform: translateY(5px); }
             100% { transform: translateY(20px); }
         }
         @keyframes float-delayed-2 {
-            0% { transform: translateY(30px); } /* Starts even lower */
+            0% { transform: translateY(30px); } 
             50% { transform: translateY(15px); }
             100% { transform: translateY(30px); }
         }
 
-        /* Special Prize Cards */
         .prize-card {
             background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%);
             border: 4px dashed #4ade80;
@@ -106,6 +107,31 @@
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .star-bar-bg {
+            background-color: #f3f4f6;
+            border-radius: 4px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .star-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
     </style>
 </head>
 <body class="text-gray-800 overflow-x-hidden">
@@ -115,7 +141,7 @@
         <div class="container mx-auto text-center transform skew-y-2">
             <h1 class="text-4xl md:text-6xl text-yellow-300 drop-shadow-md mb-2">🏆 The Grand Meow-off 🏆</h1>
             <p class="text-xl font-bold">Official Results of the 2025 Cat Contest</p>
-            <p class="text-sm opacity-90 mt-2">(Powered by Advanced Meow-thematics)</p>
+            <p class="text-sm opacity-90 mt-2">(Powered by Fair & Balanced Meow-thematics)</p>
         </div>
     </header>
 
@@ -124,8 +150,6 @@
         <!-- Podium Section (Top 3) -->
         <div class="mb-20 mt-8">
              <h2 class="text-4xl text-center text-pink-600 mb-12 silly-font drop-shadow-sm">👑 The Royal Family 👑</h2>
-            
-             <!-- Flex container for podium alignment -->
              <div class="flex flex-col md:flex-row items-end justify-center gap-4 md:gap-0 h-auto md:h-96" id="podium-container">
                  <!-- Podium Javascript will inject here -->
              </div>
@@ -143,13 +167,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
             <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-blue-400 text-center transform -rotate-1 hover:rotate-0 transition">
                 <div class="text-4xl mb-2">🗳️</div>
-                <h3 class="text-xl font-bold text-blue-600">Total Votes Cast</h3>
-                <p class="text-3xl font-black" id="total-votes">0</p>
+                <h3 class="text-xl font-bold text-blue-600">Total Voters</h3>
+                <p class="text-3xl font-black" id="total-voters">0</p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-purple-400 text-center transform rotate-1 hover:rotate-0 transition">
-                <div class="text-4xl mb-2">🧮</div>
+                <div class="text-4xl mb-2">⚖️</div>
                 <h3 class="text-xl font-bold text-purple-600">Fairness Check</h3>
-                <p class="text-lg font-bold">Verified Math</p>
+                <p class="text-lg font-bold">Normalized by Voter</p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-lg border-b-4 border-green-400 text-center transform -rotate-1 hover:rotate-0 transition">
                 <div class="text-4xl mb-2">🐈</div>
@@ -168,21 +192,25 @@
         
         <!-- Math Explanation Section -->
         <div class="max-w-4xl mx-auto mt-20">
-            <h2 class="text-3xl text-center text-green-700 mb-6 silly-font">🔬 How The Advanced Meow-thematics Work 🤓</h2>
+            <h2 class="text-3xl text-center text-green-700 mb-6 silly-font">🔬 How The "Fair" Math Works 🤓</h2>
             <div class="math-explanation">
-                <p class="mb-4 text-gray-700">The final ranking is based on the **Average Score** because we want the best-rated cat to win, not just the most popular cat. **Total Number of Votes** tells you who's the most famous, but **Average Score** tells you who's the most loved!</p>
+                <p class="mb-4 text-gray-700">We noticed that some cats had 4 pictures and some had only 1. To ensure cats with more pictures don't have an unfair mathematical advantage (or disadvantage) due to a larger denominator, we now calculate the score <strong>Per Voter</strong> first.</p>
                 <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mb-4">
-                    <p class="text-lg font-bold text-green-800">The Formula (The Average Score):</p>
-                    <p class="text-xl font-mono text-green-900 mt-2">
-                        <span class="font-extrabold text-2xl">Average Score</span> = $$\frac{\text{Total Points Received (1s + 2s + 3s + 4s + 5s)}}{\text{Total Number of Votes}}$$
+                    <p class="text-lg font-bold text-green-800">The New Formula:</p>
+                    <p class="text-md text-gray-700 mt-2 mb-2">First, we find each voter's personal average for a cat:</p>
+                    <p class="text-sm font-mono text-green-900 bg-white inline-block p-1 border rounded mb-3">
+                        Voter's Avg = (Sum of ratings they gave this cat) / (Photos they rated)
+                    </p>
+                    <p class="text-md text-gray-700 mb-2">Then, we average everyone's personal averages:</p>
+                    <p class="text-xl font-mono text-green-900">
+                        $$ \text{Final Score} = \frac{\sum \text{Voter Averages}}{\text{Total Number of Voters}} $$
                     </p>
                 </div>
                 <ul class="list-disc list-inside space-y-2 text-gray-600">
-                    <li>Scores are based on a 1 (lowest) to 5 (highest) rating system.</li>
-                    <li>The **Total Points Received** is the sum of every individual rating a cat received. Think of this as the cat's total lifetime score.</li>
-                    <li>The **Total Number of Votes** (or just "Votes") is simply how many people rated that cat. Think of it as **popularity**. (This number is the denominator in the formula).</li>
-                    <li>We calculate the average, round it to two decimal places, and rank the cats from highest average to lowest.</li>
-                    <li>The small calculation you see on each card (e.g., `106 ÷ 27`) confirms this calculation.</li>
+                    <li>This treats every voter as having exactly <strong>one voice</strong> per cat.</li>
+                    <li>If you rated 4 pictures of "The night", your 4 ratings are combined into your single opinion score.</li>
+                    <li>If you rated 1 picture of "Fadi", that single rating is your opinion score.</li>
+                    <li>The denominator is now the same for everyone: ~27 voters.</li>
                 </ul>
             </div>
         </div>
@@ -191,15 +219,95 @@
 
     <footer class="bg-gray-800 text-white py-8 mt-10 text-center">
         <p class="text-lg mb-2">🐾 Made for the love of cats 🐾</p>
-        <p class="text-xs text-gray-500">Avatars generated by Robohash (because real cats refused to sign model releases).</p>
+        <p class="text-xs text-gray-500">Avatars generated by Robohash</p>
     </footer>
 
     <!-- Background Paws Generation -->
     <div id="paws-container"></div>
 
+    <!-- MODAL -->
+    <div id="score-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md modal-content overflow-hidden relative">
+            <!-- Header -->
+            <div class="bg-pink-500 p-6 text-white relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-yellow-300 text-2xl font-bold">&times;</button>
+                <div class="flex items-center gap-4">
+                    <img id="modal-img" src="" class="w-20 h-20 rounded-full border-4 border-white shadow-lg bg-gray-100">
+                    <div>
+                        <h2 id="modal-name" class="text-2xl font-bold silly-font">Cat Name</h2>
+                        <span id="modal-rank" class="bg-yellow-300 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">Rank #1</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-6">
+                <!-- Big Score -->
+                <div class="text-center mb-6">
+                    <div class="text-gray-500 text-sm uppercase tracking-wide font-bold">Fair Average Score</div>
+                    <div id="modal-score" class="text-5xl font-black text-pink-600">0.00</div>
+                    <div id="modal-equation" class="text-xs text-gray-400 font-mono mt-1">sum / voters</div>
+                </div>
+
+                <!-- Star Distribution Chart -->
+                <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                    <span>📊 Raw Rating Distribution</span>
+                </h3>
+                <div class="space-y-2 mb-6" id="modal-bars">
+                    <!-- JS Injects bars here -->
+                </div>
+
+                <!-- Fair Math Details -->
+                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                    <h3 class="text-xs font-bold text-blue-800 uppercase mb-2">🧮 The Fair Math Breakdown</h3>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-600">Sum of Voter Averages:</span>
+                        <span id="modal-sum-avgs" class="font-mono font-bold">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2 border-b border-blue-200 pb-2">
+                        <span class="text-blue-600">Total Voters:</span>
+                        <span id="modal-total-voters" class="font-mono font-bold">0</span>
+                    </div>
+                    <div class="text-xs text-blue-500 italic">
+                        *Calculated by averaging each voter's personal rating first, then averaging those together.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- DATA ---
-        // Includes extended stats (Total Score, Count, Fives) calculated from your CSV
+        // --- 1. DATA INPUT ---
+        const rawCsvData = `Timestamp,Email Address,The night,The night,The night,The night,Zi,Zi,Zi,Zi,Zi,mocaccino,mocaccino,L,bashar,bashar,bashar,Auwias,Auwias,Auwias,Auwias,Auwias,Polar,Polar,Polar,Polar,Qabls,Qabls,Qabls,Qabls,Qabls,Qabls,Hop,Hop,zaid,Fadi
+11/24/2025 21:46:41,auwais.albahra@gmail.com,3,3,3,2,2,2,2,2,3,3,4,3,2,2,3,5,5,5,5,5,3,3,2,2,2,2,2,2,2,3,2,3,3,3
+11/24/2025 21:46:43,ameenalrawabdeh9@gmail.com,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5
+11/24/2025 21:46:44,fox.andfoxe@gmail.com,4,3,4,3,4,5,3,4,3,4,3,4,5,4,3,5,5,3,5,3,5,3,5,4,3,5,3,3,4,4,5,4,4,5
+11/24/2025 21:47:02,yamro2005@gmail.com,5,5,5,2,5,5,5,5,5,4,4,5,4,4,4,4,5,4,1,5,5,5,5,5,4,4,4,5,5,4,5,5,1,3
+11/24/2025 21:47:07,basharmakahkeh@gmail.com,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+11/24/2025 21:47:58,you20240781@std.psut.edu.jo,5,5,5,5,2,2,2,2,2,1,1,1,1,1,1,5,5,2,5,5,1,1,2,1,1,1,1,1,1,1,5,1,5,5
+11/24/2025 21:48:00,malikmahmoud21@gmail.com,4,3,4,2,3,5,3,3,2,5,5,3,1,1,1,4,5,4,3,3,4,2,3,3,3,1,3,3,2,4,3,3,3,5
+11/24/2025 21:48:16,thisisomj@gmail.com,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5
+11/24/2025 21:48:25,lar20231235@std.psut.edu.jo,4,4,5,3,4,4,1,1,2,2,4,5,5,2,5,5,5,3,4,2,3,2,3,5,4,3,5,4,4,3,5,3,4,3
+11/24/2025 21:48:33,lazeina06@gmail.com,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,4,5,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5
+11/24/2025 21:48:55,yousefelaraj@gmail.com,5,5,5,5,5,5,2,3,1,5,5,5,5,3,5,5,5,5,5,5,2,2,3,4,5,5,4,5,5,5,5,3,5,1
+11/24/2025 21:48:56,sami1almajali@gmail.com,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5
+11/24/2025 21:49:25,kidcudi1987@gmail.com,4,4,5,3,2,2,4,3,3,5,4,3,2,2,2,4,3,3,5,4,3,3,3,3,3,4,4,4,4,3,5,5,3,5
+11/24/2025 21:49:51,abdulazizkhaled771@gmail.com,5,5,5,5,5,4,3,2,1,4,5,5,4,4,3,5,5,3,5,5,5,2,1,2,4,3,4,4,3,4,4,4,5,5
+11/24/2025 21:50:35,mak20241010@std.psut.edu.jo,2,3,5,5,5,5,2,5,2,5,5,1,5,5,5,5,5,1,4,1,5,1,1,5,5,1,5,2,5,5,5,1,3,5
+11/24/2025 21:50:56,tsababha@gmail.com,4,4,5,5,5,5,4,5,4,4,4,3,3,3,4,5,5,3,4,4,5,5,5,5,4,3,4,5,5,5,5,5,5,2
+11/24/2025 21:51:23,om.nawahdah@gmail.com,1,1,1,1,1,1,1,1,1,1,1,1,5,1,1,1,5,1,3,1,5,1,1,1,1,1,1,1,1,1,4,3,5,5
+11/24/2025 21:54:30,nooreldeenalkomi321@gmail.com,5,4,5,4,3,3,3,3,3,3,3,2,1,2,1,5,5,3,4,4,5,3,4,4,4,5,4,4,4,4,5,5,5,5
+11/24/2025 21:55:24,oma20220598@std.psut.edu.jo,4,2,4,1,5,5,4,2,2,1,1,4,1,2,1,5,5,1,4,2,3,1,2,1,3,1,2,1,1,1,5,2,1,5
+11/24/2025 22:20:52,polargoatonator@gmail.com,5,2,5,4,4,4,5,1,1,5,4,1,5,3,5,5,5,5,5,5,5,5,5,5,4,2,5,1,5,3,5,4,3,5
+11/24/2025 22:22:05,baboby05@gmail.com,5,5,5,5,1,1,1,1,1,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+11/24/2025 22:23:46,tas20241111@std.psut.edu.jo,4,3,4,5,4,4,4,4,4,4,5,5,3,5,3,4,5,3,3,3,5,3,4,5,5,3,4,3,3,4,5,5,4,5
+11/24/2025 23:13:39,hamzaalbanna5@gmail.com,5,5,5,5,1,1,1,1,1,3,3,1,1,1,1,5,5,5,5,5,5,5,5,5,1,1,1,1,1,1,5,5,5,5
+11/25/2025 3:57:25,sar20258016@std.psut.edu.jo,1,5,1,1,5,5,1,1,1,1,5,5,5,1,1,5,5,5,1,3,5,1,1,5,5,5,5,5,5,5,1,1,1,1
+11/25/2025 4:29:16,julius.14159@gmail.com,3,3,2,2,3,3,2,3,3,2,3,3,2,2,3,3,2,2,3,2,3,2,2,3,5,4,5,4,4,5,3,3,3,3
+11/25/2025 6:39:16,ghaithzak9@gmail.com,4,3,1,4,4,3,2,2,2,3,3,2,4,2,3,4,3,2,4,2,2,3,3,4,2,3,4,3,3,1,3,4,3,3
+11/25/2025 7:55:18,moh20240241@std.psut.edu.jo,4,5,4,5,5,4,3,4,3,4,4,3,4,4,4,3,3,4,3,4,5,4,5,5,3,3,3,3,3,3,3,3,4,5`;
+
+        // --- 2. METADATA ---
         const catMetadata = {
             "Fadi": { desc: "The King of the Jungle (House)" },
             "The night": { desc: "Dark mode activated" },
@@ -214,28 +322,164 @@
             "Zi": { desc: "Maybe was sleeping in the pics?" }
         };
 
-        const results = [
-            { rank: 1, name: "Fadi", score: 3.93, votes: 27, totalScore: 106, fives: 17 },
-            { rank: 2, name: "The night", score: 3.71, votes: 108, totalScore: 401, fives: 49 },
-            { rank: 3, name: "Auwias", score: 3.68, votes: 135, totalScore: 497, fives: 63 },
-            { rank: 4, name: "Hop", score: 3.63, votes: 54, totalScore: 196, fives: 25 },
-            { rank: 5, name: "mocaccino", score: 3.50, votes: 54, totalScore: 189, fives: 19 },
-            { rank: 6, name: "zaid", score: 3.44, votes: 27, totalScore: 93, fives: 10 },
-            { rank: 7, name: "Polar", score: 3.29, votes: 108, totalScore: 355, fives: 43 },
-            { rank: 8, name: "Qabls", score: 3.18, votes: 162, totalScore: 515, fives: 47 },
-            { rank: 9, name: "L", score: 3.07, votes: 27, totalScore: 83, fives: 9 },
-            { rank: 10, name: "bashar", score: 3.05, votes: 81, totalScore: 247, fives: 25 },
-            { rank: 11, name: "Zi", score: 3.01, votes: 135, totalScore: 407, fives: 37 }
-        ];
+        // --- 3. PARSING LOGIC (UPDATED FOR FAIRNESS) ---
+        function calculateResultsFromCSV(csv) {
+            const rows = csv.trim().split('\n');
+            const headers = rows[0].split(',');
+            
+            // 1. Identify which columns belong to which cat
+            const catMap = {}; // { "The night": [2, 3, 4, 5], "Fadi": [34] }
+            
+            for (let c = 2; c < headers.length; c++) {
+                const catName = headers[c].trim();
+                if (!catMap[catName]) {
+                    catMap[catName] = [];
+                }
+                catMap[catName].push(c);
+            }
+
+            const catStats = {};
+
+            // Initialize storage
+            Object.keys(catMap).forEach(cat => {
+                catStats[cat] = { 
+                    voterScores: [], // Stores average score of each voter for this cat
+                    totalRawScore: 0, 
+                    totalRawVotes: 0, 
+                    fives: 0,
+                    starCounts: {1:0, 2:0, 3:0, 4:0, 5:0} // Track raw stars for chart
+                };
+            });
+
+            // 2. Loop through each Voter (Row)
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = rows[i].split(',');
+                
+                Object.keys(catMap).forEach(catName => {
+                    const indices = catMap[catName];
+                    let voterSum = 0;
+                    let voterCount = 0;
+
+                    // Calculate this specific voter's average for this cat
+                    indices.forEach(index => {
+                        const val = parseInt(rowData[index]);
+                        if (!isNaN(val)) {
+                            voterSum += val;
+                            voterCount++;
+                            // We still track these for the "stats" prizes, but not for the ranking
+                            catStats[catName].totalRawScore += val;
+                            catStats[catName].totalRawVotes++;
+                            if (val === 5) catStats[catName].fives++;
+                            // Track distribution
+                            if(val >= 1 && val <= 5) {
+                                catStats[catName].starCounts[val]++;
+                            }
+                        }
+                    });
+
+                    // If the voter voted at least once for this cat, record their personal average
+                    if (voterCount > 0) {
+                        const personalAvg = voterSum / voterCount;
+                        catStats[catName].voterScores.push(personalAvg);
+                    }
+                });
+            }
+
+            // 3. Calculate Final Global Averages
+            let resultsArray = Object.keys(catStats).map(catName => {
+                const stats = catStats[catName];
+                
+                // The "Fair" Average
+                const sumOfVoterAvgs = stats.voterScores.reduce((a, b) => a + b, 0);
+                const fairAverage = stats.voterScores.length > 0 ? (sumOfVoterAvgs / stats.voterScores.length) : 0;
+
+                return {
+                    name: catName,
+                    totalScore: stats.totalRawScore, 
+                    votes: stats.totalRawVotes,     
+                    fives: stats.fives,
+                    score: fairAverage.toFixed(2), // This determines rank
+                    voterCount: stats.voterScores.length,
+                    sumVoterAvgs: sumOfVoterAvgs.toFixed(2),
+                    starCounts: stats.starCounts
+                };
+            });
+
+            // Sort by Fair Average Score (Descending)
+            resultsArray.sort((a, b) => b.score - a.score);
+
+            // Add Rank
+            resultsArray.forEach((item, index) => {
+                item.rank = index + 1;
+            });
+
+            return resultsArray;
+        }
+
+        // --- 4. EXECUTION ---
+        const results = calculateResultsFromCSV(rawCsvData);
 
         // --- UTILS ---
         function getCatImage(name) {
-            // RoboHash generates unique cat images based on the text string
             return `https://robohash.org/${name}?set=set4&bgset=bg1&size=200x200`;
         }
 
         function getCatDesc(name) {
             return catMetadata[name]?.desc || "A mysterious challenger!";
+        }
+
+        // --- MODAL LOGIC ---
+        function showBreakdown(catName) {
+            const cat = results.find(c => c.name === catName);
+            if (!cat) return;
+
+            // Populate Modal Data
+            document.getElementById('modal-name').textContent = cat.name;
+            document.getElementById('modal-img').src = getCatImage(cat.name);
+            document.getElementById('modal-rank').textContent = "Rank #" + cat.rank;
+            document.getElementById('modal-score').textContent = cat.score;
+            document.getElementById('modal-equation').textContent = `${cat.sumVoterAvgs} (Sum) ÷ ${cat.voterCount} (Voters)`;
+            document.getElementById('modal-sum-avgs').textContent = cat.sumVoterAvgs;
+            document.getElementById('modal-total-voters').textContent = cat.voterCount;
+
+            // Generate Bars
+            const barsContainer = document.getElementById('modal-bars');
+            barsContainer.innerHTML = '';
+            
+            const colors = { 5: 'bg-green-500', 4: 'bg-blue-400', 3: 'bg-yellow-400', 2: 'bg-orange-400', 1: 'bg-red-400' };
+            
+            // Reverse loop 5 down to 1
+            for (let i = 5; i >= 1; i--) {
+                const count = cat.starCounts[i];
+                const percentage = (cat.votes > 0) ? (count / cat.votes) * 100 : 0;
+                
+                const barHTML = `
+                    <div class="flex items-center text-xs text-gray-600 gap-3">
+                        <div class="w-8 font-bold text-right">${i} ⭐</div>
+                        <div class="flex-1 star-bar-bg">
+                            <div class="star-bar-fill ${colors[i]}" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="w-8 text-right font-mono">${count}</div>
+                    </div>
+                `;
+                barsContainer.innerHTML += barHTML;
+            }
+
+            // Show Modal
+            const modal = document.getElementById('score-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('score-modal').classList.add('hidden');
+        }
+
+        // Close when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('score-modal');
+            if (event.target == modal) {
+                closeModal();
+            }
         }
 
         // --- RENDER LOGIC ---
@@ -276,7 +520,7 @@
 
         function createPodiumCard(cat, rank, colorClasses, textClasses, animClasses, badgeIcon) {
             return `
-                <div class="relative w-full max-w-xs ${animClasses} cursor-pointer group" onclick="launchConfetti()">
+                <div class="relative w-full max-w-xs ${animClasses} cursor-pointer group" onclick="showBreakdown('${cat.name}')">
                     <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl z-30 drop-shadow-md">${badgeIcon}</div>
                     <div class="${colorClasses} rounded-3xl p-6 shadow-xl border-b-8 text-center flex flex-col items-center">
                         <img src="${getCatImage(cat.name)}" alt="${cat.name}" class="cat-avatar w-32 h-32 mb-4 object-cover bg-white">
@@ -284,9 +528,9 @@
                         <p class="text-xs text-gray-500 italic mb-3 px-2 h-8 overflow-hidden">"${getCatDesc(cat.name)}"</p>
                         <div class="bg-white/80 rounded-lg px-4 py-2 w-full">
                             <div class="text-3xl font-black ${textClasses}">${cat.score}</div>
-                            <div class="text-xs text-gray-400 uppercase tracking-wider mb-2">Avg Score</div>
+                            <div class="text-xs text-gray-400 uppercase tracking-wider mb-2">Fair Avg</div>
                             <div class="math-pill border-t border-gray-200 pt-1 mt-1 block">
-                                ${cat.totalScore} pts / ${cat.votes} votes
+                                ${cat.voterCount} voters
                             </div>
                         </div>
                     </div>
@@ -303,14 +547,14 @@
             // Winner is already results[0]
 
             const prizes = [
-                { title: "The Crowd Pleaser", icon: "📢", cat: mostVotesCat, reason: `Most Votes Received (${mostVotesCat.votes})`, color: "border-purple-400 bg-purple-50" },
+                { title: "The Crowd Pleaser", icon: "📢", cat: mostVotesCat, reason: `Most Clicks (${mostVotesCat.votes})`, color: "border-purple-400 bg-purple-50" },
                 { title: "5-Star Magnet", icon: "⭐", cat: mostFivesCat, reason: `Most 5/5 Ratings (${mostFivesCat.fives})`, color: "border-yellow-400 bg-yellow-50" },
-                { title: "The Perfectionist", icon: "🎯", cat: results[0], reason: "Highest Average Score", color: "border-green-400 bg-green-50" }
+                { title: "The Perfectionist", icon: "🎯", cat: results[0], reason: "Highest Fair Score", color: "border-green-400 bg-green-50" }
             ];
 
             prizes.forEach(prize => {
                 container.innerHTML += `
-                    <div class="bg-white rounded-xl p-6 shadow-md border-b-4 ${prize.color} flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
+                    <div class="bg-white rounded-xl p-6 shadow-md border-b-4 ${prize.color} flex flex-col items-center text-center transform hover:scale-105 transition duration-300 cursor-pointer" onclick="showBreakdown('${prize.cat.name}')">
                         <div class="text-4xl mb-2">${prize.icon}</div>
                         <h3 class="font-bold text-xl mb-2 text-gray-800">${prize.title}</h3>
                         <img src="${getCatImage(prize.cat.name)}" class="w-16 h-16 rounded-full border-2 border-white shadow mb-2">
@@ -322,8 +566,11 @@
         }
 
         function renderStats() {
-            const totalVotes = results.reduce((acc, curr) => acc + curr.votes, 0);
-            document.getElementById('total-votes').textContent = totalVotes;
+            // Approximation: Since we know every cat has ~27 voters, we can just grab the first one's voter count
+            // Or calculate distinct emails if we had them (but we only have rows here)
+            const voterCount = results[0]?.voterCount || 0;
+            
+            document.getElementById('total-voters').textContent = voterCount;
             document.getElementById('total-cats').textContent = results.length;
         }
 
@@ -336,6 +583,7 @@
                 const rank = cat.rank;
                 const card = document.createElement('div');
                 card.className = `cat-card bg-white p-4 rounded-xl shadow border-l-8 flex items-center justify-between hover:bg-gray-50 ${getBorderColor(rank)}`;
+                card.onclick = () => showBreakdown(cat.name);
                 
                 card.innerHTML = `
                     <div class="flex items-center gap-4 flex-1">
@@ -351,7 +599,7 @@
                     <div class="text-right pl-4">
                         <div class="text-xl font-bold text-gray-700">${cat.score}</div>
                         <div class="math-pill mt-1">
-                            ${cat.totalScore} ÷ ${cat.votes}
+                            ${cat.voterCount} Voters
                         </div>
                     </div>
                 `;
